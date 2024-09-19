@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("GamebarHandler")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Gamebar Handler")]
+[assembly: AssemblyDescription("Handles those annoying gamebar/gaming overlay windows")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("GamebarHandler")]
+[assembly: AssemblyCompany("Aida Enna")]
+[assembly: AssemblyProduct("Gamebar Handler")]
 [assembly: AssemblyCopyright("Copyright ©  2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
