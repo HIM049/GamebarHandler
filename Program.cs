@@ -1,18 +1,35 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace GamebarHandler
 {
     internal class Program
     {
+
+        public static bool IsDebug = false;
+
         private static void Main(string[] args)
         {
             if (args.Length > 0)
             {
-                Console.WriteLine("Handled the Gamebar stuff!");
-                Console.WriteLine("Press any key to exit the program...");
-                Console.ReadKey();
+                if (IsDebug)
+                {
+                    switch (args.First())
+                    {
+                        case "ms-gamebar":
+                            ShowMessageBox("Handled a ms-gamebar URI call!");
+                            break;
+                        case "ms-gamingoverlay":
+                            ShowMessageBox("Handled a ms-gamingoverlay URI call!");
+                            break;
+                        default:
+                            ShowMessageBox("Handled an unknown URI call? The URI passed was \"" + args.First() + "\".");
+                            break;
+                    }
+                }
             }
             else
             {
@@ -26,15 +43,21 @@ namespace GamebarHandler
                         using (RegistryKey newRegCom = newRegKey.CreateSubKey(@"shell\open\command"))
                         {
                             string ProgramPath = Process.GetCurrentProcess().MainModule.FileName;
-                            newRegCom.SetValue("", $"\"{ProgramPath}\" called-from-uri");
+                            newRegCom.SetValue("", $"\"{ProgramPath}\" ms-gamebar");
                         }
                     }
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"Saved registry values for ms-gamebar URI to open {Process.GetCurrentProcess().MainModule.FileName}.");
-                    Console.ResetColor();
-                    Console.WriteLine("Whenever windows tries to open the Gamebar now, it should open this program instead, which will then silently close.");
-                    Console.WriteLine("Press any key to exit the program...");
-                    Console.ReadKey();
+                    using (RegistryKey newRegKey = Registry.ClassesRoot.CreateSubKey("ms-gamingoverlay", RegistryKeyPermissionCheck.ReadWriteSubTree))
+                    {
+                        newRegKey.SetValue("", "URL:GamebarHandler");
+                        newRegKey.SetValue("URL Protocol", "");
+
+                        using (RegistryKey newRegCom = newRegKey.CreateSubKey(@"shell\open\command"))
+                        {
+                            string ProgramPath = Process.GetCurrentProcess().MainModule.FileName;
+                            newRegCom.SetValue("", $"\"{ProgramPath}\" ms-gamingoverlay");
+                        }
+                    }
+                    ShowMessageBox($"Successfully saved registry values so ms-gamebar and ms-gamingoverlay URIs (commands) will open \"{Process.GetCurrentProcess().MainModule.FileName}\" instead." + Environment.NewLine + "Whenever Windows tries to open the Gamebar\\Gaming Overlay now, it should open this program instead, which will then silently close.");
                 }
                 catch (Exception ex)
                 {
@@ -42,17 +65,19 @@ namespace GamebarHandler
                     switch (ex.GetType().ToString())
                     {
                         case "System.UnauthorizedAccessException":
-                            Console.WriteLine("Access denied - Please make sure you are running this program as administrator!");
+                            ShowMessageBox("Access denied - Please make sure you are running this program as administrator!", MessageBoxIcon.Error);
                             break;
                         default:
-                            Console.WriteLine("Something went wrong:" + Environment.NewLine + ex);
+                            ShowMessageBox("Something went wrong:" + Environment.NewLine + ex, MessageBoxIcon.Error);
                             break;
                     }
-                    Console.ResetColor();
-                    Console.WriteLine("Press any key to exit the program...");
-                    Console.ReadKey();
                 }
             }
+        }
+
+        public static void ShowMessageBox(string message, MessageBoxIcon MessageBoxIconType = MessageBoxIcon.Information)
+        {
+            MessageBox.Show(message, "Gamebar Handler",MessageBoxButtons.OK, MessageBoxIconType);
         }
     }
 }
