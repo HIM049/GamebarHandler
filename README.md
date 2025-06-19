@@ -12,5 +12,16 @@ When you don't have the gamebar and Xbox gaming overlay installed, Windows still
 ## How do I use it?
 Download the zip file from the [releases](https://github.com/Aida-Enna/GamebarHandler/releases) page, then extract it somewhere and run GamebarHandler.exe. <ins>**Please note that you will need to keep the exe file somewhere on your machine**</ins>, otherwise Windows will bring the popups back. If you ever move it, just run it again and it'll tell Windows where it is now.
 
+If you want to open steam big picture on game bar be called. You can add a environment variable called "GAMEBAR_OPEN_STEAM_BIG_PICTURE" to enable this feature.
+Run the command below:
+```shell
+[Environment]::SetEnvironmentVariable("GAMEBAR_OPEN_STEAM_BIG_PICTURE", "1", "User")
+```
+To delete the environment variable, you can run:
+```shell
+[Environment]::SetEnvironmentVariable("GAMEBAR_OPEN_STEAM_BIG_PICTURE", $null, "User")
+```
+
+
 ## How do I know this is safe to use?
 The source code is available, you can feel free to build it yourself if you like. Feel free to virus scan it with your favorite tool (like [virtustotal.com](http://virtustotal.com)!)
